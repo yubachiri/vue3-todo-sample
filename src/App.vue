@@ -1,19 +1,54 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <input type="text" v-model="state.input" />
+    <button @click="addTodo">
+      Add TODO
+    </button>
+
+    <p v-for="(todo, index) in state.todos" :key="index">
+      {{todo}}
+      <button @click="completeTodo(index)">
+        Complete
+      </button>
+    </p>
+
+    <p>Completed</p>
+    <p v-for="(todo, index) in state.completedTodos" :key="index">
+      {{todo}}
+    </p>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { defineComponent, reactive } from 'vue'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
+export default defineComponent({
+  setup() {
+    const state = reactive({
+      input: "",
+      todos: [],
+      completedTodos: [],
+    })
+
+    function addTodo() {
+      state.todos = [...state.todos, state.input]
+      state.input = ""
+    }
+
+    function completeTodo(index) {
+      state.completedTodos = [...state.completedTodos, state.todos[index]]
+
+      state.todos.splice(index, 1)
+      state.todos = [...state.todos]
+    }
+
+    return {
+      state,
+      addTodo,
+      completeTodo
+    }
   }
-}
+})
 </script>
 
 <style>
